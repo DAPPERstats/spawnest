@@ -25,6 +25,7 @@
   library(shiny)
   library(shinysky)
   library(rhandsontable)
+  library(pomp)
   source("spawnestfunctions.R")
 
 #2. ui code
@@ -77,14 +78,40 @@ shinyUI(
           sidebarLayout(
             sidebarPanel(width = 3,
               HTML('<b>Parameter Values</b>'),
-		  br(),
+              br(),
               div(class = "table", style = "overflow:auto; ",
                 rHandsontableOutput("hotAUCpt", height = 70)),
               div(class = "simpleDiv", verbatimTextOutput("AUCtext"))
             ),
             mainPanel(
-              plotOutput(outputId = "countPlotAUC", height = "550px")
+              plotOutput(outputId = "countPlotAUC", height = "800px")
             ),
+          )
+        ),
+        tabPanel("pomp",
+          sidebarLayout(
+            sidebarPanel(width = 3,
+              HTML('<b>Parameter Values</b>'),
+              br(),
+              br(),
+              div(class = "table", style = "overflow:auto; ",
+                rHandsontableOutput("hotpompfigpt", height = 70)),
+              HTML('<img src="equations.jpg" height = "225">'),
+              br(),
+              br(),
+              shiny::actionButton("modelBuild", label = 
+                "Simulate Spawner Counts")
+            ), 
+            mainPanel(
+              tabsetPanel(
+                tabPanel("Parameter Plot",
+                  plotOutput(outputId = "pompparmplot", height = "800px")
+                ),
+                tabPanel("Simulate Plot",
+                  plotOutput(outputId = "pompsimplot", height = "800px")
+                )
+              )
+            )
           )
         )
       )

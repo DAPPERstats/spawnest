@@ -25,6 +25,7 @@
   library(shiny)
   library(shinysky)
   library(rhandsontable)
+  library(pomp)
   source("spawnestfunctions.R")
 
 #2. server code
@@ -34,8 +35,9 @@ shinyServer(function(input, output) {
   # reactive values
   #   EF = entry file (logical re: its loading)
   #   ul = data frame created from the entry file
+  #   ppm = parameter pomp model
 
-    rv <- reactiveValues(EF = F, ul = NULL)
+    rv <- reactiveValues(EF = F, ul = NULL, ppm = NULL)
 
 
   # Upload data button
@@ -101,6 +103,77 @@ shinyServer(function(input, output) {
     })
 
 
+  # output plot for pomp parameters
+
+    output$pompparmplot <- renderPlot({
+
+      if (!is.null(input$hotpompfigpt)) {
+        PT <- hot_to_r(input$hotpompfigpt)
+        THETA <- PT$theta
+        A0 <- PT$alpha0
+        A1 <- PT$alpha1
+        A2 <- PT$alpha2
+        M0 <- PT$mu0
+        M1 <- PT$mu1
+      } else {
+        THETA <- 1
+        A0 <- -12
+        A1 <- -17
+        A2 <- -9
+        M0 <- 0.05
+        M1 <- 0.1
+      }
+      parmplots(params = c(theta = THETA, alph0 = A0, alph1 = A1, alph2 = A2,
+        mu0 = M0, mu1 = M1))
+
+    })
+
+  # model fit button
+
+    observeEvent(input$modelBuild, {
+
+      if (!is.null(input$hotpompfigpt)) {
+        PT <- hot_to_r(input$hotpompfigpt)
+        THETA <- PT$theta
+        A0 <- PT$alpha0
+        A1 <- PT$alpha1
+        A2 <- PT$alpha2
+        M0 <- PT$mu0
+        M1 <- PT$mu1
+        RHO <- PT$rho
+      } else {
+        THETA <- 1
+        A0 <- -12
+        A1 <- -17
+        A2 <- -9
+        M0 <- 0.05
+        M1 <- 0.1
+        RHO <- 0.5
+      }
+     
+      rv$ppm <- pompbuild(dates = seq(as.Date("1990-01-01"), as.Date("1990-12-31"), 1), 
+        counts = rep(0, length(1:365)), 
+        parameters = c(theta = THETA, alph0 = A0, alph1 = A1, alph2 = A2,
+        mu0 = M0, mu1 = M1, rho = RHO), year = 1990)
+
+    })
+
+
+  # output plot for pomp sims
+
+    output$pompsimplot <- renderPlot({
+
+      if (!is.null(rv$ppm)) {
+        simpomp(pompobj = rv$ppm, NSims = 1000)
+    
+      } else {
+        
+      }
+
+    })
+
+
+
   # hot for the data
 
     output$hotDATA <- renderRHandsontable({
@@ -128,6 +201,21 @@ shinyServer(function(input, output) {
       rhandsontable(cc, readOnly = F,rowHeaders = NULL)
     })
 
+
+
+  # hot for the pomp exploration figure params
+
+    output$hotpompfigpt <- renderRHandsontable({
+      cc <- data.frame(
+        "alpha0" = -12,
+        "alpha1" = -17,
+        "alpha2" = -9,
+        "theta" = 1,
+        "mu0" = 0.05,
+        "mu1" = 0.1,
+        "rho" = 0.45)
+      rhandsontable(cc, readOnly = F,rowHeaders = NULL)
+    })
 
   # calculation of AUC and output generation
 

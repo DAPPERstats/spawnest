@@ -67,7 +67,9 @@
 
 
 
-pompobj <- pompbuild(dates = seq(as.Date("1990-01-01"), as.Date("1990-12-31"), 1), counts = rep(0, length(1:365)), parameters = c(theta = 0.01, alph0 = -12, alph1 = -17, alph2 = -9, mu0 = 0.07, mu1 = 0, rho = 0.45), year = 1990)
+pompobj <- pompbuild(dates = seq(as.Date("1990-01-01"), as.Date("1990-12-31"), 1), 
+counts = rep(0, length(1:365)), 
+parameters = c(theta = 10, alph0 = -20, alph1 = -17, alph2 = -9, mu0 = 0.05, mu1 = 0.1, rho = 0.45), year = 1990)
 
 simTSA <- simpomp(pompobj = pompobj, NSims = 1000)
 
@@ -82,5 +84,12 @@ parmplots(params = c(theta = 0.01, alph0 = -12, alph1 = -17, alph2 = -9, mu0 = 0
 
 
  
-
+        THETA <- 0.01
+        A0 <- -12
+        A1 <- -17
+        A2 <- -9
+        M0 <- 0.05
+        M1 <- 0.1
+      parmplots(params = c(theta = THETA, alph0 = A0, alph1 = A1, alph2 = A2,
+        mu0 = M0, mu1 = M1))
 

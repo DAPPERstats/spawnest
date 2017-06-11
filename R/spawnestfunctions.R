@@ -328,7 +328,7 @@ simpomp <- function (pompobj = NULL, NSims = NULL, ...){
 
     # plot
 		
-      plot(dates, counts, type = 'n', ylab= '', xlab = '', xaxt = 'n', 
+      plot(1, 1, type = 'n', ylab= '', xlab = '', xaxt = 'n', 
         yaxt = 'n', bty = "L", xlim = c(x1, x2), ylim = c(0, y2))
    
       axis(1, mds, labels = xaxlbs, cex.axis = 1.25)
@@ -357,7 +357,7 @@ simpomp <- function (pompobj = NULL, NSims = NULL, ...){
 
     # plot
 		
-      plot(dates, counts, type = 'n', ylab= '', xlab = '', xaxt = 'n', 
+      plot(1, 1, type = 'n', ylab= '', xlab = '', xaxt = 'n', 
         yaxt = 'n', bty = "L", xlim = c(x1, x2), ylim = c(0, y2))
    
       axis(1, mds, labels = xaxlbs, cex.axis = 1.25)
@@ -421,9 +421,13 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
 
   tv <- seq(0, 365, 0.1)
 
+  theta <- params["theta"]
+  theta[is.na(theta)] <- 0.01
+  theta[theta <= 0] <- 0.01
+
   # functional relationships
 
-    alph <- exp(params["alph0"] + params["alph1"] * cos(2 * pi * tv / 365) + 
+    ALPH <- exp(params["alph0"] + params["alph1"] * cos(2 * pi * tv / 365) + 
       params["alph2"] * sin(2 * pi * tv / 365) )  
 
     mu <- params["mu0"] + params["mu1"] * tv / 365
@@ -431,9 +435,11 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
 
   # simulate arrival process
 
-    ap <- matrix(NA, nrow = 1000, ncol = length(tv))
+    ap <- matrix(0, nrow = 100, ncol = length(tv))
     for (i in 1:ncol(ap)) {
-      ap[ , i] <- rnbinom(1000, mu = alph[i], size = params["theta"])
+      alph <- ALPH[i]
+      alph[is.na(alph)] <- 0
+      ap[ , i] <- rnbinom(100, mu = alph, size = theta)
     }
 
     ps <- c(0.025, 0.25, 0.5, 0.75, 0.975)
@@ -460,7 +466,8 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
 
     # y axis range
 			
-      y2 <- max(alph) * 1.5 
+      y2 <- max(ALPH) * 1.5 
+      y2[is.na(y2)] <- 10
 
     # y axis labels
 		
@@ -477,7 +484,7 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
       axis(2, yaxlbs2, labels = F, tck = -0.01)
       mtext(side = 2, "Arrival Rate", line = 5.25, cex = 1.5)
 
-      points(tv, alph, type = 'l', lwd = 3)
+      points(tv, ALPH, type = 'l', lwd = 3)
 
 
   # plot arrivals
@@ -501,7 +508,7 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
       axis(2, yaxlbs2, labels = F, tck = -0.01)
       mtext(side = 2, "Arrivals", line = 5.25, cex = 1.5)
       for (i in 1:100) {
-        points(tv, ap[i, ], type = 'l', col = rgb(0.9, 0.9, 0.9, 0.1))
+        points(tv, ap[i, ], type = 'l', col = rgb(0.9, 0.9, 0.9, 0.2))
       }
       points(tv, apm, type = 'l', lwd = 2) 
 
@@ -511,6 +518,7 @@ parmplots <- function (params = c(theta = NULL, alph0 = NULL, alph1 = NULL,
     # y axis range
 			
       y2 <- max(sl) * 1.2 
+      y2[is.na(y2)] <- 20
 
     # y axis labels
 		
