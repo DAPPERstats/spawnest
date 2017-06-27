@@ -67,9 +67,27 @@
 
 
 
-pompobj <- pompbuild(dates = seq(as.Date("1990-01-01"), as.Date("1990-12-31"), 1), 
-counts = rep(0, length(1:365)), 
-parameters = c(theta = 10, alph0 = -20, alph1 = -17, alph2 = -9, mu0 = 0.05, mu1 = 0.1, rho = 0.45), year = 1990)
+pompobj <- pompbuild(dates = dates, , 
+	counts = counts, 
+	parameters = c(theta = 0.1, 
+	alph0 = -14, alph1 = -17, alph2 = -17, 
+	mu0 = 0.045, mu1 = 0.02, rho = 0.499), year = 1990)
+
+	plot(dates, pompobj@data)
+
+
+mm<-	mif2(pompobj,
+	  start = c(theta = 0.1, alph0 = -14, alph1 = -17, alph2 = -17, mu0 = 0.045, mu1 = 0.02, rho = 0.499, tdaysYr = 365, TSA.0 = 0, S.0=0, yrf.0=0),
+	  Np = 100000, Nmif = 100,
+        cooling.type="geometric",
+        cooling.fraction.50=0.5,
+        transform=TRUE,
+        rw.sd=rw.sd(theta = 0.01, alph0 = 0.1, alph1 = 0.1, alph2 = 0.1, mu0 = 0.001, mu1 = 0.0001, rho = 0.01))
+
+
+plot(mm)
+
+
 
 simTSA <- simpomp(pompobj = pompobj, NSims = 1000)
 

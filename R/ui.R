@@ -130,11 +130,22 @@ shinyUI(
           br(), 
           br(),
           HTML('SpawnEst is an online tool for estimating salmonid spawner 
-            escapements from ground surveys. It is currently in development
-            and should be considered provisional. SpawnEst is provided under 
-            GNU GPL version 3 (and any later versions). 
-            <a href="https://dapperstats.github.io/spawnest/">SpawnEst on 
-            Github</a>')
+            escapements from ground surveys.'),
+          br(),
+          HTML('It is currently in development
+            and should be considered provisional.'),
+          br(),
+          br(),
+          HTML('The current working draft of the SpawnEst report is 
+            located <a href = "Report.pdf">here</a>.'),
+          br(),
+          br(),
+          HTML('<a href="https://dapperstats.github.io/spawnest/">The current
+            working draft of the SpawnEst code is on Github</a>'),
+          br(),
+          br(),
+          HTML('SpawnEst is provided under GNU GPL version 3 (and any 
+            later versions).')
         )
       )
     )

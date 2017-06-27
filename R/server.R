@@ -116,12 +116,12 @@ shinyServer(function(input, output) {
         M0 <- PT$mu0
         M1 <- PT$mu1
       } else {
-        THETA <- 1
-        A0 <- -12
+        THETA <- 0.1
+        A0 <- -14
         A1 <- -17
-        A2 <- -9
-        M0 <- 0.05
-        M1 <- 0.1
+        A2 <- -17
+        M0 <- 0.045
+        M1 <- 0.02
       }
       parmplots(params = c(theta = THETA, alph0 = A0, alph1 = A1, alph2 = A2,
         mu0 = M0, mu1 = M1))
@@ -142,13 +142,13 @@ shinyServer(function(input, output) {
         M1 <- PT$mu1
         RHO <- PT$rho
       } else {
-        THETA <- 1
-        A0 <- -12
+        THETA <- 0.1
+        A0 <- -14
         A1 <- -17
-        A2 <- -9
-        M0 <- 0.05
-        M1 <- 0.1
-        RHO <- 0.5
+        A2 <- -17
+        M0 <- 0.045
+        M1 <- 0.02
+        RHO <- 0.499
       }
      
       rv$ppm <- pompbuild(dates = seq(as.Date("1990-01-01"), as.Date("1990-12-31"), 1), 
@@ -207,13 +207,13 @@ shinyServer(function(input, output) {
 
     output$hotpompfigpt <- renderRHandsontable({
       cc <- data.frame(
-        "alpha0" = -12,
+        "alpha0" = -14,
         "alpha1" = -17,
-        "alpha2" = -9,
-        "theta" = 1,
-        "mu0" = 0.05,
-        "mu1" = 0.1,
-        "rho" = 0.45)
+        "alpha2" = -17,
+        "theta" = 0.1,
+        "mu0" = 0.045,
+        "mu1" = 0.02,
+        "rho" = 0.499)
       rhandsontable(cc, readOnly = F,rowHeaders = NULL)
     })
 
